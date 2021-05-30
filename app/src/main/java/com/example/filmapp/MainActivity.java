@@ -37,7 +37,66 @@ public class MainActivity extends AppCompatActivity {
     String titles[] = new String[20];
     String descriptions[] = new String[20];
     String dates[] = new String[20];
+    int page=1;
 
+    class DisplayTask extends AsyncTask<Void, Void, Void> {
+
+        List<String> s_titles = new ArrayList<String>();
+        List<String> s_texts = new ArrayList<String>();
+        List<String> s_dates = new ArrayList<String>();
+        int parse_page;
+
+        public DisplayTask() {
+        }
+
+        public DisplayTask(int parse_page) {
+            this.parse_page = parse_page;
+        }
+
+        public List<String> getS_titles() {
+            return s_titles;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            Document doc = null;
+            String url="https://www.kinonews.ru/news" + ((parse_page>1) ? ("p"+parse_page) : "");
+            try {
+
+                doc = Jsoup.connect(url).get();
+
+                Elements e_titles = doc.getElementsByClass("anons-title-new");
+                Elements e_texts = doc.getElementsByClass("anons-text");
+                Elements e_dates = doc.getElementsByClass("anons-date-new");
+
+                for (int i = 0; i < e_titles.size(); i++) {
+
+                    s_titles.add(e_titles.get(i).select("a").get(0).text());
+                    s_texts.add(e_texts.get(i).text());
+                    s_dates.add(e_dates.get(i).text());
+
+                }
+
+            } catch (Exception e) {
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            s_titles.toArray(titles);
+            s_texts.toArray(descriptions);
+            s_dates.toArray(dates);
+
+            listView.invalidateViews();
+
+        }
+    }
     class MyAdapter extends ArrayAdapter<String> {
 
         Context context;
@@ -86,57 +145,16 @@ public class MainActivity extends AppCompatActivity {
         MyAdapter adapter = new MyAdapter(this, titles, descriptions, dates);
 
         listView.setAdapter(adapter);
+        DisplayTask mt = new DisplayTask();
+        mt.execute();
+
 
     }
 
     public void ButtonClick(View v) {
-        class MyTask extends AsyncTask<Void, Void, Void> {
 
-            List<String> s_titles = new ArrayList<String>();
-            List<String> s_texts = new ArrayList<String>();
-            List<String> s_dates = new ArrayList<String>();
 
-            @Override
-            protected Void doInBackground(Void... params) {
-
-                Document doc = null;
-                try {
-
-                    doc = Jsoup.connect("https://www.kinonews.ru/news").get();
-
-                    Elements e_titles = doc.getElementsByClass("anons-title-new");
-                    Elements e_texts = doc.getElementsByClass("anons-text");
-                    Elements e_dates = doc.getElementsByClass("anons-date-new");
-
-                    for (int i = 0; i < e_titles.size(); i++) {
-
-                        s_titles.add(e_titles.get(i).select("a").get(0).text());
-                        s_texts.add(e_texts.get(i).text());
-                        s_dates.add(e_dates.get(i).text());
-
-                    }
-
-                } catch (Exception e) {
-
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                super.onPostExecute(result);
-
-                s_titles.toArray(titles);
-                s_texts.toArray(descriptions);
-                s_dates.toArray(dates);
-
-                listView.invalidateViews();
-
-            }
-        }
-
-        MyTask mt = new MyTask();
+        DisplayTask mt = new DisplayTask();
         mt.execute();
     }
 
