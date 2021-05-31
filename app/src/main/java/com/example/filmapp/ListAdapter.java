@@ -1,23 +1,28 @@
 package com.example.filmapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     Context context;
     ArrayList<Item> items;
-    ArrayList<String> titles;
-    ArrayList<String> descriptions;
-    ArrayList<String> dates;
 
     public ListAdapter(Context context, ArrayList<Item> items) {
         this.context = context;
@@ -37,6 +42,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.title.setText(items.get(position).title);
         holder.desc.setText(items.get(position).description);
         holder.date.setText(items.get(position).date);
+        holder.pic.setImageBitmap(items.get(position).picture);
     }
 
     @Override
@@ -49,11 +55,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         TextView title;
         TextView desc;
         TextView date;
+        ImageView pic;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title= (TextView) itemView.findViewById(R.id.item_title);
-            desc= (TextView) itemView.findViewById(R.id.item_description);
-            date= (TextView) itemView.findViewById(R.id.item_date);
+            title = (TextView) itemView.findViewById(R.id.item_title);
+            desc = (TextView) itemView.findViewById(R.id.item_description);
+            date = (TextView) itemView.findViewById(R.id.item_date);
+            pic = (ImageView) itemView.findViewById(R.id.item_image);
         }
     }
+
+
 }
+
