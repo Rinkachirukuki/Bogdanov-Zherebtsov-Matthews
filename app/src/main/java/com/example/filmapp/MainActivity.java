@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             listItems.addAll(items);
-
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -135,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
         DisplayTask task = new DisplayTask();
 
         task.execute();
-
-        adapter.notifyDataSetChanged();
     }
 
     public void ButtonClick(View v) {
@@ -147,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetch_data() {
         DisplayTask mt = new DisplayTask();
         mt.execute();
-        adapter.notifyDataSetChanged();
+
     }
 
 }

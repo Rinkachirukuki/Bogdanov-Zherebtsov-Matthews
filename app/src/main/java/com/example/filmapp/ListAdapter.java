@@ -51,6 +51,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         TextView date;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            title= (TextView) itemView.findViewById(R.id.item_title);
+            desc= (TextView) itemView.findViewById(R.id.item_description);
+            date= (TextView) itemView.findViewById(R.id.item_date);
         }
     }
 }
