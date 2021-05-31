@@ -33,9 +33,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private ListView listView;
 
-    String titles[] = new String[20];
-    String descriptions[] = new String[20];
-    String dates[] = new String[20];
+    RecyclerView recyclerView;
+    LinearLayoutManager layoutManager;
+    ListAdapter adapter;
+
+    ArrayList<Item> listItems=new ArrayList<>();
+
+    boolean isScrolling=false;
+
+    int currentItems, totalItems, scrollOutItems;
+
     int page=1;
 
     class DisplayTask extends AsyncTask<Void, Void, Void> {
@@ -87,28 +94,16 @@ public class MainActivity extends AppCompatActivity {
 
             listItems.addAll(items);
 
-
         }
     }
 
-
-
-    RecyclerView recyclerView;
-    LinearLayoutManager layoutManager;
-    ListAdapter adapter;
-    ArrayList<Item> listItems=new ArrayList<>();
-    boolean isScrolling=false;
-    int currentItems, totalItems, scrollOutItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         recyclerView=(RecyclerView)findViewById(R.id.recycleView);
-        layoutManager=new LinearLayoutManager(this);
-        adapter=new ListAdapter(this, listItems);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull  RecyclerView recyclerView, int newState) {
@@ -131,10 +126,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        DisplayTask task = new DisplayTask();
-        task.execute();
-        adapter.notifyDataSetChanged();
 
+        layoutManager=new LinearLayoutManager(this);
+        adapter=new ListAdapter(this, listItems);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+        DisplayTask task = new DisplayTask();
+
+        task.execute();
+
+        adapter.notifyDataSetChanged();
     }
 
     public void ButtonClick(View v) {
