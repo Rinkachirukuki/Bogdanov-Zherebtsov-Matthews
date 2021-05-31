@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<Item> items = new ArrayList<>();
 
-        int parse_page;
+        int parse_page=1;
 
         public DisplayTask() {
         }
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
 
             Document doc = null;
-            String url = "https://www.kinonews.ru/news" + ((parse_page > 1) ? ("p" + parse_page) : "");
+            String url = "https://www.kinonews.ru/news_p" + parse_page;
             try {
 
                 doc = Jsoup.connect(url).get();
@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(isScrolling && (currentItems+scrollOutItems==totalItems)){
                     isScrolling=false;
+                    page++;
                     fetch_data();
                 }
             }
@@ -140,10 +141,10 @@ public class MainActivity extends AppCompatActivity {
     public void ButtonClick(View v) {
         DisplayTask mt = new DisplayTask();
         mt.execute();
-        adapter.notifyDataSetChanged();
+
     }
     private void fetch_data() {
-        DisplayTask mt = new DisplayTask();
+        DisplayTask mt = new DisplayTask(page);
         mt.execute();
 
     }
